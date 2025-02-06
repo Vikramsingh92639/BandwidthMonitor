@@ -11,6 +11,20 @@ SCRIPT_NAME="bandwidth_monitor.sh"
 DEST_PATH="/usr/local/bin/$SCRIPT_NAME"
 NETWORK_INTERFACE=$(ip -o link show | awk -F': ' '{print $2}' | grep -v lo | head -n 1)
 
+# Check if the network interface was detected
+if [ -z "$NETWORK_INTERFACE" ]; then
+  echo "No valid network interface found."
+  exit 1
+fi
+
+# Create the bandwidth monitor script
+cat << 'EOF' > "$DEST_PATH"
+#!/bin/bash
+
+# Fetch the current bandwidth usage using vnstat
+vnstat -i "$NETWORK_INTERFACE" -tr 1 2 | tail -n 1 | awk '{print $1, $2, $3, $4, $5}'
+EOF
+
 # Install dependencies
 echo "Installing dependencies..."
 apt-get update
@@ -36,5 +50,8 @@ echo "Setting up cron job..."
 echo "Setting up reboot trigger..."
 (crontab -l 2>/dev/null; echo "@reboot $DEST_PATH") | crontab -
 
-# Clean up
+# Clean up any unused cron jobs
+echo "Cleaning up cron jobs..."
+crontab -l | grep -v "$SCRIPT_NAME" | crontab -
+
 echo "Setup completed successfully!"
