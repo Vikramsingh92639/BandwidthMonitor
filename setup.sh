@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Ensure the script runs as root
+if [ "$(id -u)" -ne "0" ]; then
+  echo "This script must be run as root (use sudo)."
+  exit 1
+fi
+
 # Variables
 SCRIPT_URL="https://raw.githubusercontent.com/Vikramsingh92639/BandwidthMonitor/main/bandwidth_monitor.sh"
 SCRIPT_NAME="bandwidth_monitor.sh"
@@ -20,9 +26,9 @@ echo "Enabling and starting vnstat service..."
 systemctl enable vnstat
 systemctl start vnstat
 
-# Download the script using wget
+# Download the script using curl
 echo "Downloading the script from GitHub..."
-wget "$SCRIPT_URL" -O "$DEST_PATH"
+curl -o "$DEST_PATH" "$SCRIPT_URL"
 
 # Make the script executable
 chmod +x "$DEST_PATH"
