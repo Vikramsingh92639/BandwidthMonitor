@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# Ensure the script runs as root
-if [ "$(id -u)" -ne "0" ]; then
-  echo "This script must be run as root (use sudo)."
-  exit 1
-fi
-
 # Variables
 SCRIPT_URL="https://raw.githubusercontent.com/Vikramsingh92639/BandwidthMonitor/main/bandwidth_monitor.sh"
 SCRIPT_NAME="bandwidth_monitor.sh"
