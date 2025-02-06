@@ -7,7 +7,6 @@ if [ "$(id -u)" -ne "0" ]; then
 fi
 
 # Variables
-SCRIPT_URL="https://raw.githubusercontent.com/Vikramsingh92639/BandwidthMonitor/main/bandwidth_monitor.sh"
 SCRIPT_NAME="bandwidth_monitor.sh"
 DEST_PATH="/usr/local/bin/$SCRIPT_NAME"
 NETWORK_INTERFACE=$(ip -o link show | awk -F': ' '{print $2}' | grep -v lo | head -n 1)
@@ -26,11 +25,7 @@ echo "Enabling and starting vnstat service..."
 systemctl enable vnstat
 systemctl start vnstat
 
-# Download the script using curl
-echo "Downloading the script from GitHub..."
-curl -o "$DEST_PATH" "$SCRIPT_URL"
-
-# Make the script executable
+# Make sure the script is executable
 chmod +x "$DEST_PATH"
 
 # Set up cron job to run the script every minute
